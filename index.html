@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grana Certa | Educação financeira para jovens</title>
+  <meta name="description" content="Simuladores e quiz para aprender a organizar a mesada, juntar dinheiro e fugir de dívidas.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="topo">
+    <a class="logo" href="#inicio">Grana<span>Certa</span></a>
+    <nav>
+      <a href="#problema">O problema</a>
+      <a href="#orcamento">Mesada</a>
+      <a href="#meta">Meta</a>
+      <a href="#juros">Juros</a>
+      <a href="#quiz">Quiz</a>
+      <a href="#dicas">Dicas</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <section id="inicio" class="hero">
+      <div class="container">
+        <p class="selo">Educação financeira para jovens</p>
+        <h1>Dinheiro não se aprende<br>só quando o problema chega.</h1>
+        <p class="hero-texto">Simule sua mesada, planeje uma meta e descubra como os juros podem trabalhar a seu favor ou contra você. Tudo na prática, sem complicação.</p>
+        <a class="botao" href="#orcamento">Começar agora</a>
+      </div>
+    </section>
+
+    <section id="problema" class="secao">
+      <div class="container">
+        <h2>Por que isso importa?</h2>
+        <p class="intro">Muita gente chega à vida adulta sem nunca ter aprendido a lidar com dinheiro, e isso aparece depois em dívidas, estresse e falta de planejamento.</p>
+        <div class="cards">
+          <article class="card">
+            <h3>Pouco ensino na escola</h3>
+            <p>Aprendemos equações, mas quase nada sobre orçamento, juros e crédito, coisas que usamos a vida toda.</p>
+          </article>
+          <article class="card">
+            <h3>Dívidas que crescem</h3>
+            <p>Juros compostos fazem uma dívida pequena virar grande rápido quando ninguém explicou como funciona.</p>
+          </article>
+          <article class="card">
+            <h3>Hábitos começam cedo</h3>
+            <p>Quem aprende a guardar uma parte da mesada cria um costume que dura. Este site ajuda a praticar isso.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="orcamento" class="secao alt">
+      <div class="container">
+        <h2>1. Simulador de mesada</h2>
+        <p class="intro">Coloque quanto você recebe por mês e decida como dividir. A sugestão clássica é 50% essencial, 30% lazer e 20% guardar, mas ajuste do seu jeito.</p>
+
+        <div class="painel">
+          <div class="campo">
+            <label for="renda">Quanto você recebe por mês (R$)</label>
+            <input type="number" id="renda" value="200" min="0" step="10">
+          </div>
+
+          <div class="campo">
+            <label for="essencial">Essencial (lanche, transporte): <strong id="essencialPct">50%</strong></label>
+            <input type="range" id="essencial" min="0" max="100" value="50">
+          </div>
+
+          <div class="campo">
+            <label for="lazer">Lazer (saídas, jogos, roupas): <strong id="lazerPct">30%</strong></label>
+            <input type="range" id="lazer" min="0" max="100" value="30">
+          </div>
+
+          <div class="barra" aria-hidden="true">
+            <div id="barEssencial" class="seg essencial"></div>
+            <div id="barLazer" class="seg lazer"></div>
+            <div id="barGuardar" class="seg guardar"></div>
+          </div>
+
+          <ul class="resultado-lista">
+            <li><span class="dot essencial"></span> Essencial: <strong id="vEssencial"></strong></li>
+            <li><span class="dot lazer"></span> Lazer: <strong id="vLazer"></strong></li>
+            <li><span class="dot guardar"></span> Guardar: <strong id="vGuardar"></strong> <small id="pGuardar"></small></li>
+          </ul>
+          <p class="aviso" id="avisoOrcamento"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="meta" class="secao">
+      <div class="container">
+        <h2>2. Quanto tempo pra chegar na meta?</h2>
+        <p class="intro">Quer comprar um celular, uma bicicleta ou fazer uma viagem? Descubra em quanto tempo você chega lá guardando todo mês.</p>
+
+        <div class="painel">
+          <div class="grade">
+            <div class="campo">
+              <label for="metaValor">Valor da meta (R$)</label>
+              <input type="number" id="metaValor" value="1500" min="1" step="50">
+            </div>
+            <div class="campo">
+              <label for="metaGuardo">Quanto guardo por mês (R$)</label>
+              <input type="number" id="metaGuardo" value="80" min="0" step="5">
+            </div>
+            <div class="campo">
+              <label for="metaTaxa">Rendimento ao mês (%)</label>
+              <input type="number" id="metaTaxa" value="0.8" min="0" step="0.1">
+            </div>
+          </div>
+          <p class="dica-pequena">Deixe o rendimento em 0 se for guardar em casa. Uma poupança ou investimento seguro pode render algo todo mês, e você pode ajustar o valor.</p>
+          <div class="destaque" id="metaResultado"></div>
+          <p class="aviso" id="metaExtra"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="juros" class="secao alt">
+      <div class="container">
+        <h2>3. O poder (e o perigo) dos juros</h2>
+        <p class="intro">Juros compostos são juros sobre juros. Eles fazem o dinheiro investido crescer, mas também fazem uma dívida explodir. Compare os dois lados.</p>
+
+        <div class="painel">
+          <div class="alternar" role="group" aria-label="Escolha o cenário">
+            <button type="button" id="modoGuardar" class="ativo">Estou guardando</button>
+            <button type="button" id="modoDever">Estou devendo</button>
+          </div>
+
+          <div class="grade">
+            <div class="campo">
+              <label for="jValor">Valor inicial (R$)</label>
+              <input type="number" id="jValor" value="500" min="0" step="50">
+            </div>
+            <div class="campo">
+              <label for="jTaxa">Taxa ao mês (%)</label>
+              <input type="number" id="jTaxa" value="1" min="0" step="0.1">
+            </div>
+            <div class="campo">
+              <label for="jMeses">Meses</label>
+              <input type="number" id="jMeses" value="12" min="1" max="120" step="1">
+            </div>
+          </div>
+
+          <div class="destaque" id="jResultado"></div>
+          <div class="grafico" id="jGrafico" aria-hidden="true"></div>
+          <p class="aviso" id="jTexto"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz" class="secao">
+      <div class="container">
+        <h2>4. Teste o que você aprendeu</h2>
+        <p class="intro">Cinco perguntas rápidas. Dá pra fazer na frente da turma!</p>
+        <div class="painel quiz" id="quizBox"></div>
+      </div>
+    </section>
+
+    <section id="dicas" class="secao alt">
+      <div class="container">
+        <h2>5. Dicas para levar pra vida</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Pague-se primeiro</h3>
+            <p>Assim que receber, separe a parte que vai guardar. O que sobrar é o que você gasta.</p>
+          </article>
+          <article class="card">
+            <h3>Anote seus gastos</h3>
+            <p>Por uma semana, anote tudo. Muita gente se surpreende com pequenos gastos que somam bastante.</p>
+          </article>
+          <article class="card">
+            <h3>Espere antes de comprar</h3>
+            <p>Na vontade de comprar algo, espere 48 horas. Se ainda fizer sentido, compre sem culpa.</p>
+          </article>
+          <article class="card">
+            <h3>Cuidado com parcelar</h3>
+            <p>Parcela pequena parece leve, mas várias juntas comem seu orçamento. Veja o valor total.</p>
+          </article>
+          <article class="card">
+            <h3>Tenha uma reserva</h3>
+            <p>Um dinheiro separado para imprevistos evita que um problema vire dívida.</p>
+          </article>
+          <article class="card">
+            <h3>Fale sobre dinheiro</h3>
+            <p>Converse com a família e os amigos. Quanto mais se fala, menos tabu e menos erro.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="rodape">
+    <div class="container">
+      <p><strong>Grana Certa</strong> &middot; Projeto escolar de educação financeira</p>
+      <p class="pequeno">Este site é educativo e não substitui orientação profissional. Os valores dos simuladores são exemplos.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
