@@ -190,6 +190,45 @@
       </div>
     </section>
 
+    <section id="gastos">
+  <h2>6. Meu controle de gastos</h2>
+  <p>Anote o que você gastou e veja o total de cada mês. Os dados ficam salvos só neste aparelho.</p>
+
+  <div class="gastos-form">
+    <label>O que você comprou
+      <input type="text" id="g-desc" placeholder="Ex.: lanche, passagem" maxlength="60">
+    </label>
+    <label>Valor (R$)
+      <input type="number" id="g-valor" min="0.01" step="0.01" placeholder="0,00">
+    </label>
+    <label>Categoria
+      <select id="g-cat">
+        <option value="Essencial">Essencial</option>
+        <option value="Lazer">Lazer</option>
+        <option value="Outros">Outros</option>
+      </select>
+    </label>
+    <label>Data
+      <input type="date" id="g-data">
+    </label>
+    <button type="button" id="g-add">Salvar gasto</button>
+    <p id="g-erro" role="alert" style="color:#b00020;margin:0"></p>
+  </div>
+
+  <div class="gastos-mes">
+    <label>Mês
+      <input type="month" id="g-mes">
+    </label>
+    <p id="g-total" style="font-weight:bold"></p>
+    <p id="g-cats"></p>
+  </div>
+
+  <ul id="g-lista" class="gastos-lista"></ul>
+
+  <h3>Resumo por mês</h3>
+  <ul id="g-resumo" class="gastos-lista"></ul>
+</section>
+
   </main>
 
   <footer class="rodape">
