@@ -17,7 +17,6 @@
       <a href="#meta">Meta</a>
       <a href="#juros">Juros</a>
       <a href="#quiz">Quiz</a>
-      <a href="#gastos">Gastos</a>
       <a href="#dicas">Dicas</a>
     </nav>
   </header>
@@ -159,57 +158,9 @@
       </div>
     </section>
 
-    <section id="gastos" class="secao alt">
+    <section id="dicas" class="secao alt">
       <div class="container">
-        <h2>5. Meu controle de gastos</h2>
-        <p class="intro">Anote o que você gastou e veja o total de cada mês. Os dados ficam salvos só neste aparelho e somem se você limpar o navegador.</p>
-
-        <div class="painel">
-          <div class="grade">
-            <div class="campo">
-              <label for="gDesc">O que você comprou</label>
-              <input type="text" id="gDesc" maxlength="60" placeholder="Ex.: lanche, passagem">
-            </div>
-            <div class="campo">
-              <label for="gValor">Valor (R$)</label>
-              <input type="number" id="gValor" min="0.01" step="0.01" placeholder="0,00">
-            </div>
-            <div class="campo">
-              <label for="gCat">Categoria</label>
-              <select id="gCat">
-                <option value="Essencial">Essencial</option>
-                <option value="Lazer">Lazer</option>
-                <option value="Outros">Outros</option>
-              </select>
-            </div>
-            <div class="campo">
-              <label for="gData">Data</label>
-              <input type="date" id="gData">
-            </div>
-          </div>
-          <button type="button" class="botao proxima" id="gAdd">Salvar gasto</button>
-          <p class="aviso perigo" id="gErro" role="alert"></p>
-        </div>
-
-        <div class="painel gastos-mes">
-          <div class="campo">
-            <label for="gMes">Ver o mês</label>
-            <input type="month" id="gMes">
-          </div>
-          <div class="destaque" id="gTotal"></div>
-          <ul class="gastos-cats" id="gCats"></ul>
-          <p class="aviso" id="gAviso"></p>
-          <ul class="gastos-lista" id="gLista"></ul>
-
-          <h3 class="gastos-sub">Resumo por mês</h3>
-          <ul class="gastos-lista" id="gResumo"></ul>
-        </div>
-      </div>
-    </section>
-
-    <section id="dicas" class="secao">
-      <div class="container">
-        <h2>6. Dicas para levar pra vida</h2>
+        <h2>5. Dicas para levar pra vida</h2>
         <div class="cards">
           <article class="card">
             <h3>Pague-se primeiro</h3>
