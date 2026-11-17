@@ -77,6 +77,16 @@ body::before {
 .secao.alt { background: transparent; }
 .secao h2 { font-size: 1.9rem; margin-bottom: 10px; }
 .intro { color: var(--suave); max-width: 680px; margin-bottom: 30px; }
+  #gastos .gastos-form { display: grid; gap: 10px; max-width: 420px; }
+  #gastos label { display: grid; gap: 4px; font-size: 0.95rem; }
+  #gastos input, #gastos select, #gastos button { font: inherit; padding: 8px; }
+  #gastos .gastos-mes { margin-top: 20px; }
+  #gastos .gastos-lista { list-style: none; padding: 0; max-width: 520px; }
+  #gastos .gastos-lista li {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(128,128,128,.3);
+  }
+  #gastos .gastos-lista button { padding: 4px 8px; }
 
 /* Cards */
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
@@ -104,7 +114,7 @@ body::before {
 
 .dica-pequena { font-size: 0.85rem; color: var(--suave); margin-bottom: 16px; }
 
-/* Barra do orçamento */
+
 .barra { display: flex; height: 34px; border-radius: 10px; overflow: hidden; margin: 10px 0 18px; background: var(--borda); }
 .seg { height: 100%; transition: width .3s; }
 .essencial { background: var(--azul); }
