@@ -299,137 +299,175 @@ function mostrarResultado() {
   box.append(titulo, nota, texto, again);
 }
 
+// ---------- 5. Controle de gastos ----------
+const CHAVE_GASTOS = 'grana-certa-gastos';
+const NOMES_MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+  'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+let gastos = [];
+
+try {
+  gastos = JSON.parse(localStorage.getItem(CHAVE_GASTOS)) || [];
+} catch (e) {
+  gastos = [];
+}
+if (!Array.isArray(gastos)) gastos = [];
+
+function salvarGastos() {
+  try { localStorage.setItem(CHAVE_GASTOS, JSON.stringify(gastos)); } catch (e) {}
+}
+
+function nomeMes(ym) {
+  const p = ym.split('-');
+  return NOMES_MESES[parseInt(p[1], 10) - 1] + ' de ' + p[0];
+}
+
+function dataCurta(iso) {
+  const p = iso.split('-');
+  return p[2] + '/' + p[1];
+}
+
+function dataHoje() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+$('gData').value = dataHoje();
+$('gMes').value = dataHoje().slice(0, 7);
+
+function mostrarGastos() {
+  const mes = $('gMes').value;
+  const doMes = gastos
+    .filter((g) => g.data.slice(0, 7) === mes)
+    .sort((a, b) => (a.data < b.data ? 1 : -1));
+  const total = doMes.reduce((s, g) => s + g.valor, 0);
+
+  // Total do mês
+  $('gTotal').textContent = mes ? 'Total em ' + nomeMes(mes) + ': ' + moeda.format(total) : '';
+
+  // Total por categoria
+  const porCat = { Essencial: 0, Lazer: 0, Outros: 0 };
+  doMes.forEach((g) => { porCat[g.cat] = (porCat[g.cat] || 0) + g.valor; });
+  const cats = $('gCats');
+  cats.innerHTML = '';
+  Object.keys(porCat).forEach((c) => {
+    const li = document.createElement('li');
+    li.textContent = c + ': ' + moeda.format(porCat[c]);
+    cats.appendChild(li);
+  });
+
+  // Comparação com o simulador de mesada
+  const renda = Math.max(0, parseFloat(rendaEl.value) || 0);
+  const limEss = renda * parseInt(essencialEl.value, 10) / 100;
+  const limLaz = renda * parseInt(lazerEl.value, 10) / 100;
+  const aviso = $('gAviso');
+  aviso.classList.remove('perigo');
+  if (doMes.length === 0 || renda <= 0) {
+    aviso.textContent = '';
+  } else if (total > renda) {
+    aviso.textContent = 'Você gastou ' + moeda.format(total - renda) + ' a mais do que a mesada do simulador (' + moeda.format(renda) + ').';
+    aviso.classList.add('perigo');
+  } else if (porCat.Lazer > limLaz) {
+    aviso.textContent = 'Seu lazer passou do planejado no simulador (' + moeda.format(limLaz) + '). Dá pra segurar um pouco?';
+    aviso.classList.add('perigo');
+  } else if (porCat.Essencial > limEss) {
+    aviso.textContent = 'Seus gastos essenciais passaram do planejado (' + moeda.format(limEss) + ').';
+    aviso.classList.add('perigo');
+  } else {
+    aviso.textContent = 'Você usou ' + Math.round(total / renda * 100) + '% da mesada do simulador neste mês.';
+  }
+
+  // Lista do mês
+  const lista = $('gLista');
+  lista.innerHTML = '';
+  if (doMes.length === 0) {
+    const li = document.createElement('li');
+    li.className = 'vazio';
+    li.textContent = 'Nenhum gasto neste mês. Anote o primeiro acima.';
+    lista.appendChild(li);
+  }
+  doMes.forEach((g) => {
+    const li = document.createElement('li');
+    const info = document.createElement('span');
+    info.className = 'info';
+    const nome = document.createElement('strong');
+    nome.textContent = g.desc;
+    const det = document.createElement('small');
+    det.textContent = dataCurta(g.data) + ' · ' + g.cat + ' · ' + moeda.format(g.valor);
+    info.append(nome, det);
+    const bt = document.createElement('button');
+    bt.type = 'button';
+    bt.className = 'apagar';
+    bt.textContent = 'Apagar';
+    bt.addEventListener('click', () => {
+      gastos = gastos.filter((x) => x.id !== g.id);
+      salvarGastos();
+      mostrarGastos();
+    });
+    li.append(info, bt);
+    lista.appendChild(li);
+  });
+
+  // Resumo de todos os meses
+  const meses = {};
+  gastos.forEach((g) => {
+    const k = g.data.slice(0, 7);
+    meses[k] = (meses[k] || 0) + g.valor;
+  });
+  const resumo = $('gResumo');
+  resumo.innerHTML = '';
+  const chaves = Object.keys(meses).sort().reverse();
+  if (chaves.length === 0) {
+    const li = document.createElement('li');
+    li.className = 'vazio';
+    li.textContent = 'Ainda não há meses com gastos.';
+    resumo.appendChild(li);
+  }
+  chaves.forEach((k) => {
+    const li = document.createElement('li');
+    const info = document.createElement('span');
+    info.className = 'info';
+    const nome = document.createElement('strong');
+    nome.textContent = nomeMes(k);
+    const det = document.createElement('small');
+    det.textContent = moeda.format(meses[k]);
+    info.append(nome, det);
+    const bt = document.createElement('button');
+    bt.type = 'button';
+    bt.className = 'apagar ver';
+    bt.textContent = 'Ver';
+    bt.addEventListener('click', () => { $('gMes').value = k; mostrarGastos(); });
+    li.append(info, bt);
+    resumo.appendChild(li);
+  });
+}
+
+$('gAdd').addEventListener('click', () => {
+  const desc = $('gDesc').value.trim();
+  const valor = parseFloat($('gValor').value);
+  const data = $('gData').value;
+  const erro = $('gErro');
+
+  if (!desc) { erro.textContent = 'Escreva o que você comprou.'; return; }
+  if (!(valor > 0)) { erro.textContent = 'Coloque um valor maior que zero.'; return; }
+  if (!data) { erro.textContent = 'Escolha a data do gasto.'; return; }
+  erro.textContent = '';
+
+  gastos.push({ id: Date.now(), desc: desc, valor: valor, cat: $('gCat').value, data: data });
+  salvarGastos();
+  $('gMes').value = data.slice(0, 7);
+  $('gDesc').value = '';
+  $('gValor').value = '';
+  mostrarGastos();
+});
+
+$('gMes').addEventListener('change', mostrarGastos);
+rendaEl.addEventListener('input', mostrarGastos);
+essencialEl.addEventListener('input', mostrarGastos);
+lazerEl.addEventListener('input', mostrarGastos);
+
 // ---------- Início ----------
 atualizarOrcamento();
 calcularMeta();
 calcularJuros();
 mostrarPergunta();
-
-<script>
-(function () {
-  var CHAVE = "grana-certa-gastos";
-  var gastos = [];
-
-  // Carregar o que já foi salvo
-  try {
-    gastos = JSON.parse(localStorage.getItem(CHAVE)) || [];
-  } catch (e) {
-    gastos = [];
-  }
-
-  function salvar() {
-    try { localStorage.setItem(CHAVE, JSON.stringify(gastos)); } catch (e) {}
-  }
-
-  function reais(n) {
-    return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-  }
-
-  function nomeMes(ym) {
-    var p = ym.split("-");
-    var nomes = ["janeiro","fevereiro","março","abril","maio","junho",
-                 "julho","agosto","setembro","outubro","novembro","dezembro"];
-    return nomes[Number(p[1]) - 1] + " de " + p[0];
-  }
-
-  function dataBR(iso) {
-    var p = iso.split("-");
-    return p[2] + "/" + p[1];
-  }
-
-  var $ = function (id) { return document.getElementById(id); };
-
-  // Data e mês começam em hoje
-  var hoje = new Date();
-  var mm = String(hoje.getMonth() + 1).padStart(2, "0");
-  var dd = String(hoje.getDate()).padStart(2, "0");
-  $("g-data").value = hoje.getFullYear() + "-" + mm + "-" + dd;
-  $("g-mes").value = hoje.getFullYear() + "-" + mm;
-
-  function desenhar() {
-    var mes = $("g-mes").value;
-    var doMes = gastos.filter(function (g) { return g.data.slice(0, 7) === mes; })
-                      .sort(function (a, b) { return a.data < b.data ? 1 : -1; });
-
-    // Lista do mês escolhido
-    var lista = $("g-lista");
-    lista.innerHTML = "";
-    if (doMes.length === 0) {
-      lista.innerHTML = "<li>Nenhum gasto neste mês. Anote o primeiro acima.</li>";
-    }
-    doMes.forEach(function (g) {
-      var li = document.createElement("li");
-      var texto = document.createElement("span");
-      texto.textContent = dataBR(g.data) + " · " + g.desc + " (" + g.cat + ") · " + reais(g.valor);
-      var bt = document.createElement("button");
-      bt.type = "button";
-      bt.textContent = "Apagar";
-      bt.onclick = function () {
-        gastos = gastos.filter(function (x) { return x.id !== g.id; });
-        salvar();
-        desenhar();
-      };
-      li.appendChild(texto);
-      li.appendChild(bt);
-      lista.appendChild(li);
-    });
-
-    // Total e total por categoria
-    var total = doMes.reduce(function (s, g) { return s + g.valor; }, 0);
-    $("g-total").textContent = mes ? "Total em " + nomeMes(mes) + ": " + reais(total) : "";
-    var porCat = {};
-    doMes.forEach(function (g) { porCat[g.cat] = (porCat[g.cat] || 0) + g.valor; });
-    $("g-cats").textContent = Object.keys(porCat).map(function (c) {
-      return c + ": " + reais(porCat[c]);
-    }).join("  |  ");
-
-    // Resumo de todos os meses
-    var meses = {};
-    gastos.forEach(function (g) {
-      var k = g.data.slice(0, 7);
-      meses[k] = (meses[k] || 0) + g.valor;
-    });
-    var resumo = $("g-resumo");
-    resumo.innerHTML = "";
-    var chaves = Object.keys(meses).sort().reverse();
-    if (chaves.length === 0) {
-      resumo.innerHTML = "<li>Ainda não há meses com gastos.</li>";
-    }
-    chaves.forEach(function (k) {
-      var li = document.createElement("li");
-      li.innerHTML = "<span></span><strong></strong>";
-      li.children[0].textContent = nomeMes(k);
-      li.children[1].textContent = reais(meses[k]);
-      resumo.appendChild(li);
-    });
-  }
-
-  $("g-add").onclick = function () {
-    var desc = $("g-desc").value.trim();
-    var valor = parseFloat($("g-valor").value);
-    var data = $("g-data").value;
-    var erro = $("g-erro");
-
-    if (!desc) { erro.textContent = "Escreva o que você comprou."; return; }
-    if (!(valor > 0)) { erro.textContent = "Coloque um valor maior que zero."; return; }
-    if (!data) { erro.textContent = "Escolha a data do gasto."; return; }
-    erro.textContent = "";
-
-    gastos.push({
-      id: Date.now(),
-      desc: desc,
-      valor: valor,
-      cat: $("g-cat").value,
-      data: data
-    });
-    salvar();
-    $("g-mes").value = data.slice(0, 7); // mostra o mês do gasto salvo
-    $("g-desc").value = "";
-    $("g-valor").value = "";
-    desenhar();
-  };
-
-  $("g-mes").onchange = desenhar;
-  desenhar();
-})();
-</script>
+mostrarGastos();
