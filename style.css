@@ -129,7 +129,6 @@ body::before {
 .destaque.perigo { color: var(--vermelho); }
 .destaque small { display: block; font-size: 0.9rem; font-weight: 500; color: var(--suave); }
 
-
 /* Alternar */
 .alternar { display: flex; gap: 10px; margin-bottom: 22px; }
 .alternar button {

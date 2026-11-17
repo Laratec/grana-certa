@@ -47,8 +47,6 @@ function atualizarOrcamento(origem) {
   }
 }
 
-
-
 rendaEl.addEventListener('input', () => atualizarOrcamento());
 essencialEl.addEventListener('input', () => atualizarOrcamento('essencial'));
 lazerEl.addEventListener('input', () => atualizarOrcamento('lazer'));
